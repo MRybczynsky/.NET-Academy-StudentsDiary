@@ -18,4 +18,5 @@ namespace StudentsDiary
         public string Polish { get; set; }
         public string FLanguage { get; set; }
     }
+
 }

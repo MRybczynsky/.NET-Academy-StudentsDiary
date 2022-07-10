@@ -1,57 +1,80 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace StudentsDiary
 {
     public partial class Main : Form
     {
+        private delegate void DisplayMessage(string message);
+
         private FileHelper<List<Student>> _fileHelper = new FileHelper<List<Student>>(Program.FilePath);
+
         public Main()
         {
             InitializeComponent();
             RefreshDiary();
             SetColumnHeader();
 
-            var list1 = new List<string>();
+            //var list = new List<Person>();
+            //{
+            //    new Student { FirstName = "StudentImie", LastName = "StudentNazwisko", Math = "4" };
+            //    new Teacher { FirstName = "TeacherImie", LastName = "TeacherNazwisko" };
+            //};
+
+            //foreach (var item in list)
+            //{
+            //    MessageBox.Show(item.GetInfo());
+            //}
+
+            //try
+            //{
+            //    var student = new Student();
+            //    student.Property = "2";
+            //    MessageBox.Show(student.Property);
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
+
+            //var list = new List<int> { 2, 422, 22, 5, 67 };
+
+            //var list2 = (from x in list 
+            //            where x > 10
+            //            orderby x descending
+            //            select x).ToList(); //linq
+
+            //var list3 = list.Where(x => x > 10).OrderByDescending(x => x).ToList(); //lambda
 
             //var students = new List<Student>();
-            //students.Add(new Student { FirstName = "Jan" });
-            //students.Add(new Student { FirstName = "Marek" });
-            //students.Add(new Student { FirstName = "Małgosia" });
 
-            //SerializeToFile(students);
+            //var students1 = from x in students
+            //               select x.Id; //zostaną wyświetlone jedynie identyfikatory studentow
+            //var students2 = students.Select(x => x.Id);
 
+            //var allPositives = list.All(x => x > 0);
+            //MessageBox.Show(allPositives.ToString());
 
-            //var students = DeserializeFromFile();
-            //foreach (var item in students)
-            //{
-            //    MessageBox.Show(item.FirstName);
-            //}
-
-
-            //var path = $@"{Path.GetDirectoryName(Application.ExecutablePath)}\..\NowyPlik3.txt";
-
-            //System.IO.File.Create(@"C:\Users\Maciek\source\repos\StudentsDiary\NowyPlik.txt");
-            //System.IO.File.Create($@"{System.IO.Path.GetDirectoryName(Application.ExecutablePath)}\..\NowyPlik2.txt");
-
-            //if (!File.Exists(path))
-            //{
-            //    File.Create(path);
-            //}
-
-            //File.Delete(path);
-            //File.WriteAllText(path, "Zostań programistą .NET");
-            //File.AppendAllText(path, "\nAkademia .NET\n"); //automatycznie tworzy plik
-
-            //var text = File.ReadAllText(path);
-
-            //MessageBox.Show(text);
-
-
+            //var anyNumberBiggerThan100 = list.Any(x => x > 100);
+            //MessageBox.Show(anyNumberBiggerThan100.ToString());
+            //var contain10 = list.Contains(10);
+            //var sum = list.Sum();
+            //var count = list.Count();
+            //var avg = list.Average();
+            //var max = list.Max();
+            //var first = list.First(x => x>10);
 
         }
-
+        public void DisplayMessage1(string message)
+        {
+            MessageBox.Show($"Metoda 1 - {message}" );
+        }
+        public void DisplayMessage2(string message)
+        {
+            MessageBox.Show($"Metoda 2 - {message}");
+        }
         private void RefreshDiary()
         {
             var students = _fileHelper.DeserializeFromFile();
@@ -70,12 +93,20 @@ namespace StudentsDiary
             dgvDiary.Columns[6].HeaderText = "Fizyka";
             dgvDiary.Columns[7].HeaderText = "Język polski";
             dgvDiary.Columns[8].HeaderText = "Język obcy";
+
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
             var addEditStudent = new AddEditStudent();
+            addEditStudent.FormClosing += AddEditStudent_FormClosing;
             addEditStudent.ShowDialog();
+
+        }
+
+        private void AddEditStudent_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            RefreshDiary();
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
@@ -88,6 +119,7 @@ namespace StudentsDiary
 
             var addEditStudent = new AddEditStudent(
                 Convert.ToInt32(dgvDiary.SelectedRows[0].Cells[0].Value));
+            addEditStudent.FormClosing += AddEditStudent_FormClosing;
             addEditStudent.ShowDialog();
         }
 
@@ -123,5 +155,6 @@ namespace StudentsDiary
         {
             RefreshDiary();
         }
+
     }
 }
