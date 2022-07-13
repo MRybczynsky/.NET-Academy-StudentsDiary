@@ -11,11 +11,26 @@ namespace StudentsDiary
 
         private FileHelper<List<Student>> _fileHelper = new FileHelper<List<Student>>(Program.FilePath);
 
+        public bool IsMaximize
+        {
+            get
+            {
+                return Properties.Settings.Default.IsMaximize;
+            }
+            set
+            {
+                Properties.Settings.Default.IsMaximize = value;
+            }
+        }
         public Main()
         {
             InitializeComponent();
             RefreshDiary();
             SetColumnHeader();
+
+            if (IsMaximize)
+                WindowState = FormWindowState.Maximized;
+
 
             //var list = new List<Person>();
             //{
@@ -69,7 +84,7 @@ namespace StudentsDiary
         }
         public void DisplayMessage1(string message)
         {
-            MessageBox.Show($"Metoda 1 - {message}" );
+            MessageBox.Show($"Metoda 1 - {message}");
         }
         public void DisplayMessage2(string message)
         {
@@ -93,7 +108,8 @@ namespace StudentsDiary
             dgvDiary.Columns[6].HeaderText = "Fizyka";
             dgvDiary.Columns[7].HeaderText = "Język polski";
             dgvDiary.Columns[8].HeaderText = "Język obcy";
-
+            dgvDiary.Columns[9].HeaderText = "Zajęcia dodatkowe";
+            dgvDiary.Columns[10].HeaderText = "Grupa";
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -133,11 +149,11 @@ namespace StudentsDiary
 
             var selectedStudent = dgvDiary.SelectedRows[0];
 
-            var confirmDelete = 
-                MessageBox.Show($"Czy na pewno chcesz usunąć ucznia {(selectedStudent.Cells[1].Value.ToString() + " " + selectedStudent.Cells[2].Value.ToString()).Trim()}", 
+            var confirmDelete =
+                MessageBox.Show($"Czy na pewno chcesz usunąć ucznia {(selectedStudent.Cells[1].Value.ToString() + " " + selectedStudent.Cells[2].Value.ToString()).Trim()}",
                 "Usuwanie ucznia", MessageBoxButtons.OKCancel);
 
-            if(confirmDelete == DialogResult.OK)
+            if (confirmDelete == DialogResult.OK)
             {
                 DeleteStudent(Convert.ToInt32(selectedStudent.Cells[0].Value));
                 RefreshDiary();
@@ -156,5 +172,15 @@ namespace StudentsDiary
             RefreshDiary();
         }
 
+        private void Main_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (WindowState == FormWindowState.Maximized)
+                IsMaximize = true;
+            else
+                IsMaximize = false;
+            Properties.Settings.Default.Save();
+        }
     }
 }
+
+

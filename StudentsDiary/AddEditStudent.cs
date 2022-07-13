@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StudentsDiary
@@ -40,12 +42,15 @@ namespace StudentsDiary
             tbID.Text = _student.Id.ToString();
             tbFirstname.Text = _student.FirstName;
             tbLastname.Text = _student.LastName;
+            cmbIdGroup.Text = _student.IdGroup;
             tbMath.Text = _student.Math;
             tbPhysics.Text = _student.Physics;
             tbTech.Text = _student.Tech;
             tbPolish.Text = _student.Polish;
             tbFlanguage.Text = _student.FLanguage;
+            cbActivities.Checked = _student.Activities;
             rtbComment.Text = _student.Comments;
+            
         }
 
         private void AssignIdToNewStudent(List<Student> students)
@@ -70,7 +75,6 @@ namespace StudentsDiary
 
             Close();
         }
-
         private void AddStudentToList(List<Student> students)
         {
             var student = new Student
@@ -83,7 +87,9 @@ namespace StudentsDiary
                 Tech = tbTech.Text,
                 Physics = tbPhysics.Text,
                 Polish = tbPolish.Text,
-                FLanguage = tbFlanguage.Text
+                FLanguage = tbFlanguage.Text,
+                Activities = cbActivities.Checked,
+                IdGroup = (string)cmbIdGroup.Text
             };
 
             students.Add(student);
